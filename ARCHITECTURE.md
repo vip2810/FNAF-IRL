@@ -31,7 +31,7 @@ physiquement dans le bâtiment et reçoivent des instructions audio en temps ré
   (bruit statique généré en canvas) pour tester le gameplay sans matériel.
 - **Frontend** : React + Vite + TypeScript, une seule app, 4 routes :
   - `/` — lobby : choisir son rôle, entrer son nom
-  - `/guard` — écran du surveillant, style FNAF (bureau, tablette caméras, portes, énergie)
+  - `/guard` — écran du surveillant, style FNAF (bureau, tablette caméras, énergie)
   - `/monster` — écran téléphone du monstre (instructions audio TTS, boutons de zone, ATTAQUE)
   - `/admin` — configuration : caméras (IP + compte), zones, plan du bâtiment, durée de nuit
 - Tout tourne sur le **réseau local** (le PC du surveillant peut héberger le serveur).
@@ -44,9 +44,10 @@ qui convergent vers le **Bureau** du surveillant (2 entrées : gauche/droite).
 
 ### Le Surveillant (écran PC)
 - Ne voit **qu'une caméra à la fois** (comme dans FNAF : la tablette se lève/baisse).
-- Peut « fermer » les **portes** gauche/droite (virtuelles, signalées sur les téléphones).
-- **Énergie limitée (100 %)** : la tablette levée et chaque porte fermée consomment.
-  À 0 % → **blackout** : plus de caméras, plus de portes, les monstres sont libres…
+- Les **portes du bureau sont réelles** : c'est au surveillant (ou aux règles maison)
+  de les gérer physiquement — aucun bouton dans l'app.
+- **Énergie limitée (100 %)** : la tablette levée consomme.
+  À 0 % → **blackout** : plus de caméras, les monstres sont libres…
 - Gagne s'il survit jusqu'à 6h00.
 
 ### Les Monstres (téléphone + oreillette Bluetooth, téléphone en poche)
@@ -56,17 +57,17 @@ qui convergent vers le **Bureau** du surveillant (2 entrées : gauche/droite).
   « STOP ! Caméra sur toi ! » → le monstre doit s'immobiliser** (comme les animatroniques
   de FNAF qui ne bougent jamais à l'écran). Le serveur refuse tout déplacement pendant
   l'observation. Quand la tablette se baisse : « Tu peux bouger. »
-- Arrivé à une entrée du Bureau : si la porte est **ouverte** → bouton **ATTAQUE** →
-  **jumpscare plein écran + hurlement** chez le surveillant → victoire des monstres.
-  Si la porte est fermée → il faut attendre, repartir… ou pousser le surveillant à
-  vider son énergie.
+- Arrivé à une entrée du Bureau : le monstre tente de passer la **porte réelle**.
+  S'il entre, il appuie sur **ATTAQUE** → **jumpscare plein écran + hurlement** chez
+  le surveillant → victoire des monstres. Porte réelle fermée → il faut attendre,
+  repartir… ou attaquer par l'autre entrée.
 
 ### Pourquoi c'est addictif
 - **Tension asymétrique** : le surveillant gère une ressource qui fond (énergie) avec de
   l'information partielle (une seule caméra) ; les monstres jouent un 1-2-3 soleil
   physique avec une voix dans l'oreille.
-- **Bluff et méta** : fermer une porte coûte cher → le surveillant bluffe ; les monstres
-  coordonnent des attaques sur deux entrées.
+- **Bluff et méta** : le surveillant ne peut pas tout voir → il bluffe ; les monstres
+  coordonnent des attaques sur les deux entrées réelles.
 - **Difficulté progressive** : Nuit 1, 2, 3… (drain d'énergie accru, nuit plus longue).
 - **Feedback sensoriel** : statique CRT, ambiance sonore, vibrations du téléphone,
   jumpscare final.
@@ -78,14 +79,14 @@ GameState {
   phase: 'lobby' | 'night' | 'guard_win' | 'monsters_win'
   night: number            // difficulté
   clock: { hour: 0..6, elapsedSec }
-  power: 0..100            // drain = base + tablette + portes
-  guard: { watching: camId | null, doors: { left: bool, right: bool } }
+  power: 0..100            // drain = base + tablette
+  guard: { watching: camId | null }
   monsters: { id, name, zone, frozen: bool }[]
   zones: { id, name, camId, adjacentes: zoneId[], officeSide?: 'left'|'right' }[]
 }
 ```
 
-Événements Socket.IO : `guard:watch`, `guard:door`, `monster:move`, `monster:attack`,
+Événements Socket.IO : `guard:watch`, `monster:move`, `monster:attack`,
 `admin:start`, `state` (broadcast à chaque tick), `instruction` (texte → TTS fr-FR sur
 le téléphone du monstre), `jumpscare`.
 

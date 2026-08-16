@@ -40,7 +40,6 @@ export interface Monster {
 
 export interface GuardState {
   watching: string | null;
-  doors: Record<DoorSide, boolean>;
 }
 
 export interface GameState {
@@ -57,5 +56,5 @@ export interface GameState {
 
 export interface Instruction {
   text: string;
-  kind: 'freeze' | 'move' | 'door' | 'attack' | 'blackout' | 'info';
+  kind: 'freeze' | 'move' | 'attack' | 'blackout' | 'info';
 }

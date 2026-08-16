@@ -43,18 +43,18 @@ export interface GameState {
   hour: number;
   power: number;
   blackout: boolean;
-  guard: { watching: string | null; doors: Record<DoorSide, boolean> };
+  guard: { watching: string | null };
   monsters: Monster[];
   winner?: { monsterName?: string };
 }
 
 export interface Instruction {
   text: string;
-  kind: 'freeze' | 'move' | 'door' | 'attack' | 'blackout' | 'info';
+  kind: 'freeze' | 'move' | 'attack' | 'blackout' | 'info';
 }
 
 export interface GuardEvent {
-  kind: 'knock' | 'blackout' | 'jumpscare';
+  kind: 'blackout' | 'jumpscare';
   side?: DoorSide;
   monsterName?: string;
 }

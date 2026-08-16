@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import CameraView from '../components/CameraView';
-import { sfxAlarm, sfxBlip, sfxJumpscare, sfxKnock, unlockAudio } from '../lib/audio';
+import { sfxAlarm, sfxBlip, sfxJumpscare, unlockAudio } from '../lib/audio';
 import { socket, useGame } from '../lib/socket';
-import type { DoorSide, GuardEvent } from '../lib/types';
+import type { GuardEvent } from '../lib/types';
 
 function clockLabel(hour: number): string {
   return hour === 0 ? 'Minuit' : `${hour}h00`;
@@ -15,7 +15,6 @@ export default function Guard() {
 
   useEffect(() => {
     const onEvent = (event: GuardEvent) => {
-      if (event.kind === 'knock') sfxKnock();
       if (event.kind === 'blackout') sfxAlarm();
       if (event.kind === 'jumpscare') {
         sfxJumpscare();
@@ -39,7 +38,7 @@ export default function Guard() {
   const monstersInWatchedZone = watchedZone
     ? state.monsters.filter((m) => m.connected && m.zone === watchedZone.id)
     : [];
-  const usage = 1 + (watching ? 1 : 0) + (state.guard.doors.left ? 1 : 0) + (state.guard.doors.right ? 1 : 0);
+  const usage = 1 + (watching ? 1 : 0);
 
   const setWatch = (camId: string | null) => {
     sfxBlip();
@@ -54,22 +53,6 @@ export default function Guard() {
     if (!next) setWatch(null);
     else setWatch(watching ?? config.cameras[0]?.id ?? null);
   };
-
-  const toggleDoor = (side: DoorSide) => {
-    unlockAudio();
-    sfxBlip();
-    socket.emit('guard:door', { side, closed: !state.guard.doors[side] });
-  };
-
-  const doorButton = (side: DoorSide, label: string) => (
-    <div className={`door ${state.guard.doors[side] ? 'closed' : ''}`}>
-      <div>{label}</div>
-      <div style={{ fontSize: 34 }}>{state.guard.doors[side] ? '🚪🔒' : '🚪'}</div>
-      <button className={state.guard.doors[side] ? 'danger' : ''} onClick={() => toggleDoor(side)} disabled={state.blackout}>
-        {state.guard.doors[side] ? 'OUVRIR' : 'FERMER'}
-      </button>
-    </div>
-  );
 
   return (
     <div className="page">
@@ -122,13 +105,21 @@ export default function Guard() {
         <>
           {!tabletUp && (
             <div className="office">
-              {doorButton('left', 'PORTE GAUCHE')}
+              <div className="door">
+                <div>ENTRÉE GAUCHE</div>
+                <div style={{ fontSize: 34 }}>🚪</div>
+                <div className="muted">Porte réelle : gère-la en vrai.</div>
+              </div>
               <div className="office-center">
                 <div style={{ fontSize: 46 }}>🪑</div>
                 <div className="muted">Ton bureau. Les couloirs Ouest et Est mènent ici.</div>
-                <div className="muted">Ferme les portes seulement quand c'est nécessaire : ça vide l'énergie.</div>
+                <div className="muted">Les portes sont réelles : ferme-les physiquement si un monstre approche.</div>
               </div>
-              {doorButton('right', 'PORTE DROITE')}
+              <div className="door">
+                <div>ENTRÉE DROITE</div>
+                <div style={{ fontSize: 34 }}>🚪</div>
+                <div className="muted">Porte réelle : gère-la en vrai.</div>
+              </div>
             </div>
           )}
 
@@ -174,7 +165,7 @@ export default function Guard() {
       {state.blackout && state.phase === 'night' && (
         <div className="blackout-overlay">
           <div>⚠ BLACKOUT ⚠</div>
-          <div style={{ fontSize: 16 }}>Plus d'énergie. Plus de portes. Tiens jusqu'à 6h00…</div>
+          <div style={{ fontSize: 16 }}>Plus d'énergie. Les caméras sont mortes. Tiens jusqu'à 6h00…</div>
         </div>
       )}
 

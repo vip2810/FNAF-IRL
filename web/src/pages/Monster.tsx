@@ -90,7 +90,6 @@ export default function Monster() {
     .map((id) => config.zones.find((z) => z.id === id))
     .filter((z) => z != null);
   const atOfficeDoor = zone?.officeSide != null;
-  const doorClosed = atOfficeDoor && state.guard.doors[zone!.officeSide!];
 
   const move = (zoneId: string) => {
     sfxBlip();
@@ -138,8 +137,8 @@ export default function Monster() {
           <div className="panel">
             <h2 style={{ marginTop: 0 }}>📍 {zone?.name ?? me.zone}</h2>
             {atOfficeDoor && (
-              <p className={doorClosed ? 'muted' : ''} style={doorClosed ? {} : { color: 'var(--danger)' }}>
-                {doorClosed ? '🚪 Porte du bureau FERMÉE devant toi.' : '🚪 Porte du bureau OUVERTE !'}
+              <p style={{ color: 'var(--danger)' }}>
+                🚪 Tu es à une entrée du bureau. Si tu passes la porte réelle, appuie sur ATTAQUER !
               </p>
             )}
             <p className="muted">Déplace-toi physiquement, puis déclare ta nouvelle zone :</p>
@@ -152,7 +151,7 @@ export default function Monster() {
             </div>
             {atOfficeDoor && (
               <button className="attack-button" onClick={attack} disabled={me.frozen}>
-                💀 ATTAQUER LE BUREAU
+                💀 JE SUIS ENTRÉ — ATTAQUER !
               </button>
             )}
             {error && <p style={{ color: 'var(--warn)' }}>{error}</p>}

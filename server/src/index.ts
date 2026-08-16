@@ -6,7 +6,7 @@ import express from 'express';
 import { Server } from 'socket.io';
 import { loadConfig, saveConfig } from './config.js';
 import { GameEngine } from './game/engine.js';
-import type { DoorSide, GameConfig } from './game/types.js';
+import type { GameConfig } from './game/types.js';
 import { go2rtcRunning, realCameras, restartGo2rtc } from './streaming.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -107,9 +107,6 @@ io.on('connection', (socket) => {
   });
 
   socket.on('guard:watch', (camId: string | null) => engine.guardWatch(camId));
-  socket.on('guard:door', (payload: { side: DoorSide; closed: boolean }) =>
-    engine.guardDoor(payload.side, payload.closed),
-  );
   socket.on('guard:start', (night?: number) => engine.startNight(night));
   socket.on('guard:lobby', () => engine.backToLobby());
 

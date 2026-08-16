@@ -8,14 +8,13 @@ import type {
   ZoneConfig,
 } from './types.js';
 
-const BASE_DRAIN = 0.05; // % per second
-const CAMERA_DRAIN = 0.14;
-const DOOR_DRAIN = 0.2;
+const BASE_DRAIN = 0.06; // % per second
+const CAMERA_DRAIN = 0.22;
 
 export interface EngineEvents {
   state: (state: GameState) => void;
   instruction: (monsterId: string, instruction: Instruction) => void;
-  guardEvent: (event: { kind: 'knock' | 'blackout' | 'jumpscare'; side?: DoorSide; monsterName?: string }) => void;
+  guardEvent: (event: { kind: 'blackout' | 'jumpscare'; side?: DoorSide; monsterName?: string }) => void;
 }
 
 export class GameEngine extends EventEmitter {
@@ -51,7 +50,7 @@ export class GameEngine extends EventEmitter {
       hour: 0,
       power: 100,
       blackout: false,
-      guard: { watching: null, doors: { left: false, right: false } },
+      guard: { watching: null },
       monsters: this.state?.monsters.map((m) => ({ ...m, zone: this.spawnZone(), frozen: false })) ?? [],
     };
   }
@@ -160,8 +159,6 @@ export class GameEngine extends EventEmitter {
     if (!this.state.blackout) {
       let drain = BASE_DRAIN;
       if (this.state.guard.watching) drain += CAMERA_DRAIN;
-      if (this.state.guard.doors.left) drain += DOOR_DRAIN;
-      if (this.state.guard.doors.right) drain += DOOR_DRAIN;
       this.state.power = Math.max(0, this.state.power - drain * this.difficulty());
       if (this.state.power === 0) this.triggerBlackout();
     }
@@ -172,13 +169,12 @@ export class GameEngine extends EventEmitter {
   private triggerBlackout(): void {
     this.state.blackout = true;
     this.state.guard.watching = null;
-    this.state.guard.doors = { left: false, right: false };
     this.refreshFreezes();
     this.emit('guardEvent', { kind: 'blackout' });
     for (const monster of this.state.monsters) {
       this.instruct(monster.id, {
         kind: 'blackout',
-        text: 'BLACKOUT ! Plus de caméras, plus de portes. Foncez sur le bureau !',
+        text: 'BLACKOUT ! Les caméras sont mortes. Foncez sur le bureau !',
       });
     }
   }
@@ -187,23 +183,6 @@ export class GameEngine extends EventEmitter {
     if (this.state.phase !== 'night' || this.state.blackout) return;
     this.state.guard.watching = camId;
     this.refreshFreezes();
-    this.broadcast();
-  }
-
-  guardDoor(side: DoorSide, closed: boolean): void {
-    if (this.state.phase !== 'night' || this.state.blackout) return;
-    this.state.guard.doors[side] = closed;
-    for (const monster of this.state.monsters) {
-      const zone = this.zone(monster.zone);
-      if (zone?.officeSide === side) {
-        this.instruct(monster.id, {
-          kind: 'door',
-          text: closed
-            ? 'La porte devant toi vient de se fermer. Attends ou change de couloir.'
-            : 'La porte devant toi est ouverte. Tu peux attaquer !',
-        });
-      }
-    }
     this.broadcast();
   }
 
@@ -243,9 +222,7 @@ export class GameEngine extends EventEmitter {
     this.refreshFreezes();
     if (!monster.frozen) {
       const attackHint = target.officeSide
-        ? this.state.guard.doors[target.officeSide]
-          ? ' La porte est fermée.'
-          : ' La porte est OUVERTE : tu peux attaquer !'
+        ? ' Tu es à une entrée du bureau : passe la porte et ATTAQUE !'
         : '';
       this.instruct(monsterId, { kind: 'move', text: `Tu es maintenant : ${target.name}.${attackHint}` });
     }
@@ -263,11 +240,6 @@ export class GameEngine extends EventEmitter {
     }
     const zone = this.zone(monster.zone);
     if (!zone?.officeSide) return { ok: false, error: 'Tu n’es pas à une entrée du bureau.' };
-    if (this.state.guard.doors[zone.officeSide]) {
-      this.emit('guardEvent', { kind: 'knock', side: zone.officeSide });
-      this.instruct(monsterId, { kind: 'door', text: 'BOUM ! La porte est fermée. Le surveillant t’a entendu…' });
-      return { ok: false, error: 'Porte fermée.' };
-    }
     this.emit('guardEvent', { kind: 'jumpscare', side: zone.officeSide, monsterName: monster.name });
     this.instruct(monsterId, { kind: 'attack', text: 'ATTAQUE ! Fonce dans le bureau et fais ton cri !' });
     this.stopNight('monsters_win', monster.name);

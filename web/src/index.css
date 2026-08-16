@@ -168,11 +168,6 @@ h2 {
   background: #0b0b0b;
 }
 
-.door.closed {
-  border-color: var(--danger);
-  background: #1a0505;
-}
-
 .office-center {
   border: 1px dashed var(--border);
   border-radius: 10px;
