@@ -1,0 +1,387 @@
+:root {
+  --bg: #050505;
+  --panel: #101010;
+  --border: #2c2c2c;
+  --text: #d8d8d0;
+  --accent: #b9f27c;
+  --danger: #ff3b3b;
+  --warn: #ffb13b;
+  font-family: 'Courier New', Courier, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+}
+
+button {
+  font-family: inherit;
+  background: var(--panel);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 14px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button.primary {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+button.danger {
+  border-color: var(--danger);
+  color: var(--danger);
+}
+
+input,
+select,
+textarea {
+  font-family: inherit;
+  background: #0c0c0c;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 9px 12px;
+  font-size: 15px;
+}
+
+.page {
+  min-height: 100%;
+  padding: 18px;
+  max-width: 1100px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.page::after {
+  content: '';
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.22) 0 1px, transparent 1px 3px);
+  mix-blend-mode: multiply;
+}
+
+h1,
+h2 {
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.title-glow {
+  color: var(--accent);
+  text-shadow: 0 0 12px rgba(185, 242, 124, 0.5);
+}
+
+.row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  margin: 12px 0;
+}
+
+/* ---------- Lobby ---------- */
+.role-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+.role-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 22px;
+  transition: border-color 0.15s;
+}
+
+.role-card:hover {
+  border-color: var(--accent);
+}
+
+.role-card .emoji {
+  font-size: 42px;
+}
+
+/* ---------- Guard ---------- */
+.guard-hud {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 18px;
+}
+
+.power-low {
+  color: var(--danger);
+  animation: blink 0.8s infinite;
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+.office {
+  display: grid;
+  grid-template-columns: 1fr 2fr 1fr;
+  gap: 12px;
+  align-items: stretch;
+  min-height: 320px;
+}
+
+.door {
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+  background: #0b0b0b;
+}
+
+.door.closed {
+  border-color: var(--danger);
+  background: #1a0505;
+}
+
+.office-center {
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  padding: 12px;
+}
+
+.camera-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 12px;
+}
+
+.camera-feed {
+  position: relative;
+  background: #000;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 16/9;
+}
+
+.camera-feed canvas,
+.camera-feed iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+  object-fit: cover;
+}
+
+.camera-feed-label {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+  font-size: 13px;
+  color: #9fe870;
+  text-shadow: 0 0 6px #000;
+  letter-spacing: 1px;
+}
+
+.camera-feed .rec {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  color: var(--danger);
+  animation: blink 1.2s infinite;
+  font-size: 13px;
+}
+
+.monster-overlay {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.monster-chip {
+  background: rgba(0, 0, 0, 0.7);
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 20px;
+}
+
+.cam-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cam-buttons button.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.blackout-overlay,
+.jumpscare-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+
+.blackout-overlay {
+  background: rgba(0, 0, 0, 0.92);
+  color: var(--warn);
+  font-size: 26px;
+  pointer-events: none;
+}
+
+.jumpscare-overlay {
+  background: #000;
+  animation: shake 0.09s infinite;
+}
+
+.jumpscare-overlay .face {
+  font-size: min(46vw, 46vh);
+  line-height: 1;
+  filter: drop-shadow(0 0 40px var(--danger));
+}
+
+.jumpscare-overlay .name {
+  color: var(--danger);
+  font-size: 30px;
+  letter-spacing: 4px;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(0, 0);
+  }
+  25% {
+    transform: translate(-14px, 8px);
+  }
+  50% {
+    transform: translate(10px, -12px);
+  }
+  75% {
+    transform: translate(-8px, -6px);
+  }
+  100% {
+    transform: translate(12px, 10px);
+  }
+}
+
+/* ---------- Monster ---------- */
+.monster-status {
+  border-radius: 14px;
+  padding: 26px 16px;
+  text-align: center;
+  font-size: 30px;
+  font-weight: bold;
+  letter-spacing: 2px;
+  margin: 12px 0;
+  border: 3px solid var(--border);
+}
+
+.monster-status.freeze {
+  background: #2a0505;
+  border-color: var(--danger);
+  color: var(--danger);
+  animation: blink 0.6s infinite;
+}
+
+.monster-status.free {
+  background: #0a2005;
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.monster-status.waiting {
+  color: var(--warn);
+  border-color: var(--warn);
+}
+
+.zone-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.zone-buttons button {
+  padding: 18px 10px;
+  font-size: 17px;
+}
+
+.attack-button {
+  width: 100%;
+  padding: 24px;
+  font-size: 26px;
+  letter-spacing: 3px;
+  border: 3px solid var(--danger);
+  color: #fff;
+  background: #3d0000;
+  border-radius: 14px;
+  margin-top: 10px;
+}
+
+.instruction-log {
+  font-size: 14px;
+  opacity: 0.8;
+  max-height: 130px;
+  overflow-y: auto;
+}
+
+.muted {
+  opacity: 0.65;
+  font-size: 14px;
+}
+
+label.field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  flex: 1;
+  min-width: 140px;
+}
