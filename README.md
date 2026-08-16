@@ -24,6 +24,18 @@ dans la zone regardée apparaissent en surimpression — parfait pour tester le 
 
 En production : `npm run build` puis `npm start` (tout sur `http://<IP-du-PC>:3000`).
 
+> **Note** : ouvrir directement http://localhost:3000 sans avoir fait `npm run build` affiche
+> « Frontend non compilé ». En mode développement, le site est sur le port **5173**.
+
+### Le site ne s'ouvre pas ?
+
+- **Node.js 20.19+ (ou 22+)** est requis : vérifiez avec `node --version`.
+- Erreur `Cannot find native binding` au lancement : relancez `npm install`
+  (un script répare automatiquement les bindings natifs manquants — bug npm connu).
+  En dernier recours : `rm -rf node_modules && npm install`.
+- Depuis un téléphone, utilisez l'**IP locale du PC** (ex. `http://192.168.1.20:5173/monster`),
+  pas `localhost`, et le même réseau Wi-Fi (pare-feu du PC : autoriser Node sur les ports 5173/3000).
+
 ## Brancher de vraies caméras Tapo C210
 
 1. Dans l'app Tapo : *Paramètres de l'appareil → Paramètres avancés → Compte caméra* → créer un
