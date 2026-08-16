@@ -47,10 +47,10 @@ En production : `npm run build` puis `npm start` (tout sur `http://<IP-du-PC>:30
 1. Dans l'app Tapo : *Paramètres de l'appareil → Paramètres avancés → Compte caméra* → créer un
    identifiant/mot de passe (différent du compte TP-Link).
 2. Relever l'IP locale de chaque caméra (app Tapo → Infos de l'appareil, ou votre box). IP fixe conseillée.
-3. Télécharger le binaire [go2rtc](https://github.com/AlexxIT/go2rtc/releases) et le placer dans
-   `server/bin/go2rtc` (ou dans le `PATH`), exécutable (`chmod +x`).
-4. Ouvrir `/admin`, renseigner IP + compte caméra pour chaque zone, **Enregistrer** : le serveur
-   génère la config go2rtc et le relance. Les flux passent en WebRTC (~0,5 s de latence).
+3. Ouvrir `/admin`, renseigner IP + compte caméra pour chaque zone, **Enregistrer** : le serveur
+   télécharge automatiquement [go2rtc](https://github.com/AlexxIT/go2rtc) si besoin, génère sa
+   config et le lance. Les flux passent en WebRTC (~0,5 s de latence).
+   (Hors ligne : placez le binaire manuellement dans `server/bin/` — `go2rtc.exe` sous Windows.)
 
 ## Comment on joue
 

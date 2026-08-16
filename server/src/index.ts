@@ -46,7 +46,7 @@ app.get('/api/config', (_req, res) => {
   res.json(publicConfig());
 });
 
-app.put('/api/config', (req, res) => {
+app.put('/api/config', async (req, res) => {
   const incoming = req.body as Partial<GameConfig>;
   const cameras = (incoming.cameras ?? config.cameras).map((cam) => {
     if (!cam.password) {
@@ -63,7 +63,7 @@ app.put('/api/config', (req, res) => {
   };
   saveConfig(config);
   engine.setConfig(config);
-  const result = restartGo2rtc(config.cameras);
+  const result = await restartGo2rtc(config.cameras);
   io.emit('config', publicConfig());
   res.json({ ...publicConfig(), streaming: result });
 });
@@ -116,7 +116,7 @@ io.on('connection', (socket) => {
   });
 });
 
-restartGo2rtc(config.cameras);
+void restartGo2rtc(config.cameras);
 
 server.listen(PORT, () => {
   console.log(`FNAF-IRL prêt : http://${lanAddress()}:${PORT} (surveillant : /guard, monstres : /monster, config : /admin)`);
