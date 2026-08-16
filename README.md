@@ -9,6 +9,12 @@ Voir [ARCHITECTURE.md](./ARCHITECTURE.md) pour l'architecture complète et le ga
 
 ## Démarrage rapide (mode démo, sans caméras)
 
+**Windows** : installez [Node.js LTS](https://nodejs.org/fr), puis **double-cliquez sur
+`demarrer.cmd`** — il installe, compile et lance tout, puis ouvre le navigateur sur
+http://localhost:3000/guard.
+
+Sinon, en ligne de commande :
+
 ```bash
 npm install
 npm run dev        # serveur de jeu sur :3000 + frontend Vite sur :5173
