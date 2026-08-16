@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.local
+.env
+
+# Runtime config (contains camera credentials) and go2rtc artifacts
+config/game.json
+config/go2rtc.yaml
+server/bin/
