@@ -37,12 +37,13 @@ En production : `npm run build` puis `npm start` (tout sur `http://<IP-du-PC>:30
 ## Comment on joue
 
 - Une **nuit dure 6 minutes** (minuit → 6h00). Le surveillant gagne s'il survit.
-- Le surveillant ne voit **qu'une caméra à la fois** et peut fermer 2 **portes** virtuelles —
-  mais tout consomme son **énergie** (100 %). À 0 % : **blackout**, monstres libres.
+- Le surveillant ne voit **qu'une caméra à la fois**, et regarder consomme son **énergie**
+  (100 %). À 0 % : **blackout**, monstres libres. Les **portes du bureau sont réelles** :
+  elles se gèrent physiquement, pas dans l'app.
 - Quand la caméra d'une zone est regardée, les monstres qui s'y trouvent entendent
   **« STOP »** dans leur oreillette et doivent s'immobiliser (le serveur bloque leurs déplacements).
 - Les monstres avancent de zone en zone (gros boutons sur le téléphone) jusqu'aux entrées du
-  bureau ; porte ouverte → **ATTAQUE** → jumpscare plein écran chez le surveillant.
+  bureau ; s'ils passent la porte réelle → **ATTAQUE** → jumpscare plein écran chez le surveillant.
 
 ## Stack
 

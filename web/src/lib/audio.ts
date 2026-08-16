@@ -35,11 +35,6 @@ export function sfxAlarm(): void {
   tone(440, 180, 'sawtooth', 0.1, 400);
 }
 
-export function sfxKnock(): void {
-  tone(90, 120, 'triangle', 0.3);
-  tone(70, 160, 'triangle', 0.3, 180);
-}
-
 export function sfxJumpscare(): void {
   for (let i = 0; i < 14; i++) {
     tone(120 + Math.random() * 700, 140, 'sawtooth', 0.22, i * 90);

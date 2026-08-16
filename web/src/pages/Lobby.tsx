@@ -17,8 +17,8 @@ export default function Lobby() {
           <div className="emoji">🖥️</div>
           <h2>Surveillant</h2>
           <p className="muted">
-            Sur le PC. Observe les caméras, ferme les portes, survis jusqu'à 6h. Une seule caméra à
-            la fois, énergie limitée !
+            Sur le PC. Observe les caméras et survis jusqu'à 6h. Une seule caméra à
+            la fois, énergie limitée ! Les portes du bureau se gèrent en vrai.
           </p>
         </Link>
         <Link className="role-card" to="/monster">
@@ -56,9 +56,12 @@ export default function Lobby() {
             comme un animatronique.
           </li>
           <li>Caméra baissée = tu peux avancer vers le bureau (déclare ta zone sur le téléphone).</li>
-          <li>Arrivé à une entrée du bureau, porte ouverte → ATTAQUE → jumpscare !</li>
           <li>
-            Le surveillant a une énergie limitée : caméras et portes la vident. À 0 % : blackout…
+            Arrivé à une entrée du bureau : passe la vraie porte (si elle n'est pas fermée !) →
+            ATTAQUE → jumpscare !
+          </li>
+          <li>
+            Le surveillant a une énergie limitée : les caméras la vident. À 0 % : blackout…
           </li>
         </ol>
       </div>
