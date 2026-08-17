@@ -372,6 +372,24 @@ h2 {
   font-size: 14px;
 }
 
+.filter-row {
+  align-items: flex-end;
+  padding: 6px 10px;
+  border-left: 2px solid var(--border);
+}
+
+.filter-row input[type='range'] {
+  width: 140px;
+}
+
+.checkbox-field {
+  gap: 8px;
+}
+
+.filter-preview {
+  width: 180px;
+}
+
 label.field {
   display: flex;
   flex-direction: column;

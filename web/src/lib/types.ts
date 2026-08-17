@@ -10,6 +10,18 @@ export interface ZoneConfig {
   spawn?: boolean;
 }
 
+export interface CameraFilters {
+  brightness?: number;
+  contrast?: number;
+  saturation?: number;
+  grayscale?: boolean;
+}
+
+export function cameraCssFilter(filters?: CameraFilters): string {
+  const { brightness = 100, contrast = 100, saturation = 100, grayscale = false } = filters ?? {};
+  return `brightness(${brightness}%) contrast(${contrast}%) saturate(${saturation}%) grayscale(${grayscale ? 1 : 0})`;
+}
+
 export interface CameraInfo {
   id: string;
   name: string;
@@ -17,6 +29,7 @@ export interface CameraInfo {
   username?: string;
   stream?: 'stream1' | 'stream2';
   hasPassword?: boolean;
+  filters?: CameraFilters;
 }
 
 export interface PublicConfig {

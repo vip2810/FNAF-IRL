@@ -10,6 +10,18 @@ export interface ZoneConfig {
   spawn?: boolean;
 }
 
+/** Visual filters applied to the camera feed on the guard screen (CSS filter). */
+export interface CameraFilters {
+  /** % — 100 = normal */
+  brightness?: number;
+  /** % — 100 = normal */
+  contrast?: number;
+  /** % — 100 = normal, 0 = noir & blanc */
+  saturation?: number;
+  /** Noir & blanc */
+  grayscale?: boolean;
+}
+
 export interface CameraConfig {
   id: string;
   name: string;
@@ -20,6 +32,7 @@ export interface CameraConfig {
   password?: string;
   /** stream1 = 1080p, stream2 = 360p */
   stream?: 'stream1' | 'stream2';
+  filters?: CameraFilters;
 }
 
 export interface GameConfig {
