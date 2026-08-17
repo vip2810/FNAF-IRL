@@ -1,5 +1,13 @@
 import { useEffect, useState } from 'react';
-import type { CameraInfo, PublicConfig, ZoneConfig } from '../lib/types';
+import CameraView from '../components/CameraView';
+import type { CameraFilters, CameraInfo, PublicConfig, ZoneConfig } from '../lib/types';
+
+const DEFAULT_FILTERS: Required<CameraFilters> = {
+  brightness: 100,
+  contrast: 100,
+  saturation: 100,
+  grayscale: false,
+};
 
 interface EditableCamera extends CameraInfo {
   password?: string;
@@ -29,6 +37,14 @@ export default function Admin() {
 
   const updateCamera = (index: number, patch: Partial<EditableCamera>) => {
     setCameras((prev) => prev.map((cam, i) => (i === index ? { ...cam, ...patch } : cam)));
+  };
+
+  const updateFilters = (index: number, patch: Partial<CameraFilters>) => {
+    setCameras((prev) =>
+      prev.map((cam, i) =>
+        i === index ? { ...cam, filters: { ...DEFAULT_FILTERS, ...cam.filters, ...patch } } : cam,
+      ),
+    );
   };
 
   const save = async () => {
@@ -90,7 +106,8 @@ export default function Admin() {
           ce compte (pas le compte TP-Link). Laissez l'IP vide pour un flux simulé (mode démo).
         </p>
         {cameras.map((cam, i) => (
-          <div className="row" key={cam.id} style={{ marginBottom: 10 }}>
+          <div key={cam.id} style={{ marginBottom: 18 }}>
+          <div className="row" style={{ marginBottom: 6 }}>
             <label className="field">
               Nom
               <input value={cam.name} onChange={(e) => updateCamera(i, { name: e.target.value })} />
@@ -129,6 +146,55 @@ export default function Admin() {
                 <option value="stream2">360p (stream2)</option>
               </select>
             </label>
+          </div>
+          <div className="row filter-row">
+            <label className="field">
+              Luminosité : {cam.filters?.brightness ?? 100}%
+              <input
+                type="range"
+                min={20}
+                max={250}
+                value={cam.filters?.brightness ?? 100}
+                onChange={(e) => updateFilters(i, { brightness: Number(e.target.value) })}
+              />
+            </label>
+            <label className="field">
+              Contraste : {cam.filters?.contrast ?? 100}%
+              <input
+                type="range"
+                min={20}
+                max={250}
+                value={cam.filters?.contrast ?? 100}
+                onChange={(e) => updateFilters(i, { contrast: Number(e.target.value) })}
+              />
+            </label>
+            <label className="field">
+              Saturation : {cam.filters?.saturation ?? 100}%
+              <input
+                type="range"
+                min={0}
+                max={200}
+                value={cam.filters?.saturation ?? 100}
+                onChange={(e) => updateFilters(i, { saturation: Number(e.target.value) })}
+              />
+            </label>
+            <label className="field checkbox-field">
+              <span>
+                <input
+                  type="checkbox"
+                  checked={cam.filters?.grayscale ?? false}
+                  onChange={(e) => updateFilters(i, { grayscale: e.target.checked })}
+                />{' '}
+                Noir &amp; blanc
+              </span>
+              <button type="button" onClick={() => updateCamera(i, { filters: { ...DEFAULT_FILTERS } })}>
+                Réinitialiser
+              </button>
+            </label>
+            <div className="filter-preview">
+              <CameraView camId={cam.id} config={{ ...config, cameras }} />
+            </div>
+          </div>
           </div>
         ))}
         <p className="muted">

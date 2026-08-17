@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react';
+import { cameraCssFilter } from '../lib/types';
 import type { PublicConfig } from '../lib/types';
 
 /** Simulated CCTV static noise for cameras without a real RTSP stream. */
-function MockFeed({ label }: { label: string }) {
+function MockFeed({ label, filter }: { label: string; filter: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -36,7 +37,7 @@ function MockFeed({ label }: { label: string }) {
 
   return (
     <div className="camera-feed mock">
-      <canvas ref={canvasRef} />
+      <canvas ref={canvasRef} style={{ filter }} />
       <div className="camera-feed-label">{label} — SIGNAL SIMULÉ</div>
     </div>
   );
@@ -45,14 +46,15 @@ function MockFeed({ label }: { label: string }) {
 export default function CameraView({ camId, config }: { camId: string; config: PublicConfig }) {
   const camera = config.cameras.find((c) => c.id === camId);
   const label = camera?.name ?? camId;
+  const filter = cameraCssFilter(camera?.filters);
   const isReal = config.streamingCamIds.includes(camId) && config.go2rtcRunning;
 
-  if (!isReal) return <MockFeed label={label} />;
+  if (!isReal) return <MockFeed label={label} filter={filter} />;
 
   const src = `${config.go2rtcUrl}/stream.html?src=${encodeURIComponent(camId)}&mode=webrtc,mse`;
   return (
     <div className="camera-feed">
-      <iframe src={src} title={label} allow="autoplay" />
+      <iframe src={src} title={label} allow="autoplay" style={{ filter }} />
       <div className="camera-feed-label">{label}</div>
     </div>
   );
